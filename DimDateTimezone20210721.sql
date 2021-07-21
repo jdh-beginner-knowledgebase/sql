@@ -10,7 +10,7 @@ CREATE TABLE #timezones(tz VARCHAR(100), Processed BIT DEFAULT(0))
 
 INSERT INTO #timezones(tz)
 SELECT DISTINCT timezone 
-FROM TempSheDB.dbo.tblSheUser 
+FROM TimezonesTable
 WHERE timezone IS NOT NULL
 ORDER BY TimeZone
 
@@ -26,7 +26,7 @@ WHILE @timezone IS NOT NULL AND @timezone != ' '
 
 
 			SET @sql = '
-			INSERT INTO tblBIDateDimension_tz_NEW
+			INSERT INTO DateDimension_tz
 			SELECT
 				REPLACE(REPLACE(SUBSTRING(CONVERT(VARCHAR,utc_date,120),1,13),''-'',''''),'' '','''') AS utc_DateKey 
 				,REPLACE(REPLACE(SUBSTRING(CONVERT(VARCHAR,CONVERT(DateTime, SWITCHOFFSET(utc_date, DATEPART(TZOFFSET, utc_date AT TIME ZONE '''+@timezone+'''))),120),1,13),''-'',''''),'' '','''') AS tz_DateKey 
